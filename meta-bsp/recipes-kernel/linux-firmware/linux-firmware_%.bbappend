@@ -2,7 +2,7 @@
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-IMX_FIRMWARE_SRC ?= "git://github.com/NXP/imx-firmware.git;protocol=https"
+IMX_FIRMWARE_SRC ?= "git://github.com/MinSteve/imx-firmware.git;protocol=https"
 SRCBRANCH_imx-firmware = "lf-5.15.52_2.1.0"
 SRC_URI += " \
     git://github.com/murata-wireless/qca-linux-calibration.git;protocol=https;branch=master;name=murata-qca;destsuffix=murata-qca \
@@ -10,7 +10,7 @@ SRC_URI += " \
 "
 
 SRCREV_murata-qca = "a0026b646ce6adfb72f135ffa8a310f3614b2272"
-SRCREV_imx-firmware = "b6f070e3d4cab23932d9e6bc29e3d884a7fd68f4"
+SRCREV_imx-firmware = "260550a0fc2389bef703f437d3d1784ccbc64172"
 
 SRCREV_FORMAT = "default_murata-qca_imx-firmware"
 
@@ -89,11 +89,18 @@ do_install:append () {
 
     # Install NXP Connectivity IW612 firmware
     install -m 0644 ${WORKDIR}/imx-firmware/nxp/FwImage_IW612_SD/* ${D}${nonarch_base_libdir}/firmware/nxp
+
+    # Install AP6256 firmware
+    install -m 0644 ${WORKDIR}/imx-firmware/brcm/AP6256/fw_bcm43456c5_ag_apsta.bin ${D}${nonarch_base_libdir}/firmware/bcmd
+    install -m 0644 ${WORKDIR}/imx-firmware/brcm/AP6256/fw_bcm43456c5_ag.bin ${D}${nonarch_base_libdir}/firmware/bcmd
+    install -m 0644 ${WORKDIR}/imx-firmware/brcm/AP6256/nvram_ap6256.txt ${D}${nonarch_base_libdir}/firmware/bcmd
+    install -m 0644 ${WORKDIR}/imx-firmware/brcm/AP6256/BCM4345C5_AP6256_CL1.hcd ${D}${nonarch_base_libdir}/firmware/bcmd
+
 }
 
 # Use the latest version of sdma firmware in firmware-imx
 PACKAGES:remove = "${PN}-imx-sdma-license ${PN}-imx-sdma-imx6q ${PN}-imx-sdma-imx7d"
-PACKAGES =+ " ${PN}-bcm4359-pcie ${PN}-nxp89xx"
+PACKAGES =+ " ${PN}-bcm4359-pcie ${PN}-nxp89xx ${PN}-ap6256"
 
 FILES:${PN}-bcm4339 += " \
        ${nonarch_base_libdir}/firmware/brcm/brcmfmac4339-sdio.txt \
@@ -130,4 +137,11 @@ FILES:${PN}-bcm4359-pcie = " \
 
 FILES:${PN}-nxp89xx = " \
        ${nonarch_base_libdir}/firmware/nxp/* \
+"
+
+FILES_${PN}-ap6256 += " \
+       ${nonarch_base_libdir}/firmware/bcmd/fw_bcm43456c5_ag_apsta.bin \
+       ${nonarch_base_libdir}/firmware/bcmd/fw_bcm43456c5_ag.bin \
+       ${nonarch_base_libdir}/firmware/bcmd/nvram_ap6256.txt \
+       ${nonarch_base_libdir}/firmware/bcmd/BCM4345C5_AP6256_CL1.hcd \
 "
